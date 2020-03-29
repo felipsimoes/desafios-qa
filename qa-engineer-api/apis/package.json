@@ -1,0 +1,21 @@
+{
+  "name": "desafios-qa",
+  "version": "1.0.0",
+  "description": "cenarios automatizados para integracao com API da IDWall",
+  "main": "index.js",
+  "repository": "git@github.com:felipsimoes/desafios-qa.git",
+  "author": "Felipe Simoes <felipe_lima_simoes@hotmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha scenarios.js"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "cucumber": "^6.0.5",
+    "mocha": "^7.1.1",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
