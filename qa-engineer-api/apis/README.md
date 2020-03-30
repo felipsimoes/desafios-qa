@@ -1,13 +1,13 @@
 # Introdução
 Parte do dia-a-dia na IDwall inclui desenvolvermos e aprimoramos *APIs* oferecendo experiências de integração de APIs para nossos clientes.
 
-Como nós nos divertimos trabalhando, às vezes trabalhamos para nos divertir! Sua missão é desenvolver uma automação para uma de nossas principais APIs. 
+Como nós nos divertimos trabalhando, às vezes trabalhamos para nos divertir! Sua missão é desenvolver uma automação para uma de nossas principais APIs.
 
 Do que se trata esta API? https://docs.idwall.co/docs/overview
 
 **Como funciona a integração?**
 
-Para criar um relatório, precisamos utilizar a API de criação de relatórios da idwall - https://docs.idwall.co/docs/what-is-a-report. Vale informar que esta API é uma API assíncrona. 
+Para criar um relatório, precisamos utilizar a API de criação de relatórios da idwall - https://docs.idwall.co/docs/what-is-a-report. Vale informar que esta API é uma API assíncrona.
 
 Após a criação de um relatório, para obter as informações atualizadas do status de processamento do relatório precisamos acessar a API de obtenção de informações de um relatório - https://docs.idwall.co/docs/get-report.
 
@@ -101,7 +101,6 @@ Por ser uma API async, precisamos obter o status atual do processamento através
 O cenário não conhecido deve ser preparado para o caso onde o relatório possui os dados de input condizentes aos dados reais de uma pessoa. No caso, para não expor os dados verdadeiros de algum usuário, considere montar um cenário onde podemos validar o status como **CONCLUIDO** e o resultado como **VALID**. O sucesso deste cenário será validado com dados de um dos nossos integrates do time :)
 
 ```bash
-Cenário 1: Regra de data diferente
 
 POST para a URL: https://api-v2.idwall.co/relatorios de status code de retorno 200 com o codigo (id) do novo relatório gerado:{
     "matriz": "consultaPessoaDefault",
@@ -136,4 +135,4 @@ Utilize alguns dos frameworks mais conhecidos de mercado orientado a tests funci
 ### Dicas
  - Utilize a documentação da IDwall API para guiar nos cenários de testes;
  - Os exemplos ilustram situações do dia-a-dia;
- - Qualquer dúvida, independênte de qual seja, nos envie um e-mail;
+ - Qualquer dúvida, independente de qual seja, nos envie um e-mail;
