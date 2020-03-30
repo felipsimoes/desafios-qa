@@ -14,6 +14,10 @@ const app = 'https://api-v2.idwall.co/'
 const health_check = 'health'
 const reports = 'relatorios'
 
+// variaveis
+const invalid_name_message = "Inválido. [INVALID] Nome diferente do cadastrado na Receita Federal."
+const invalid_birth_date_message = "Inválido. [ERROR] Não foi possível validar: Data de nascimento informada está divergente da constante na base de dados da Secretaria da Receita Federal do Brasil."
+
 describe('GET /health', function() {
   xit('responds with json', function(done) {
     request(app)
@@ -34,8 +38,8 @@ describe('POST /relatorios', function() {
         }
     }
 
-  context('without token on request', () => {
-    xit('returns Unauthorized status', function(done) {
+  context('sem utilizar token', () => {
+    xit('returna Unauthorized status', function(done) {
       request(app)
         .post(reports)
         .send(payload)
@@ -45,10 +49,9 @@ describe('POST /relatorios', function() {
     });
   })
 
-  context('with proper token on request', () => {
-
-    context('empty parameters on payload', () => {
-      it('returns Bad Request error', function(done) {
+  context('utilizando token correto', () => {
+    context('parametros vazios no payload', () => {
+      xit('returns Bad Request error', function(done) {
         request(app)
           .post(reports)
           .set('Authorization', my_token)
@@ -65,10 +68,7 @@ describe('POST /relatorios', function() {
       });
     })
 
-    context('inconsistent data on payload', () => {
-      const invalid_name_message = "Inválido. [INVALID] Nome diferente do cadastrado na Receita Federal."
-      const invalid_birth_date_message = "Inválido. [ERROR] Não foi possível validar: Data de nascimento informada está divergente da constante na base de dados da Secretaria da Receita Federal do Brasil."
-
+    context('dados inconsistentes no payload', () => {
       context('data da nascimento divergente da base', () => {
         let report_id;
         let payload = {
@@ -82,44 +82,43 @@ describe('POST /relatorios', function() {
 
         beforeEach((done) => {
           request(app)
-          .post(reports)
-          .set('Authorization', my_token)
-          .set('Content-Type', 'application/json')
-          .set('Accept', 'application/json')
-          .timeout(5000)
-          .send(payload)
-          .expect((res) => {
-            report_id = res.body.result.numero;
-            console.log(report_id)
-          })
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            done();
-          });
+            .post(reports)
+            .set('Authorization', my_token)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .timeout(5000)
+            .send(payload)
+            .expect((res) => {
+              report_id = res.body.result.numero;
+              console.log(report_id)
+            })
+            .expect(200)
+            .end((err, res) => {
+              if (err) return done(err);
+              done();
+            });
         });
-
 
         it('retorna mensagem de Data de Nascimento divergente', function(done) {
           request(app)
-          .get(`${reports}/${report_id}`)
-          .set('Authorization', my_token)
-          .set('Content-Type', 'application/json')
-          .set('Accept', 'application/json')
-          .timeout(5000)
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            switch(res.body.result.status) {
-              case 'CONCLUIDO':
-                expect(res.body.result.mensagem).to.be.equal(invalid_birth_date_message)
-                return done();
-              default:
-                console.log(res.body.result.status)
-                return done();
-            }
-          });
+            .get(`${reports}/${report_id}`)
+            .set('Authorization', my_token)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .timeout(5000)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end((err, res) => {
+              if (err) return done(err);
+              switch(res.body.result.status) {
+                case 'CONCLUIDO':
+                  expect(res.body.result.mensagem).to.be.equal(invalid_birth_date_message)
+                  return done();
+                default:
+                  console.log(res.body.result.status)
+                  return done();
+              }
+            });
         })
       })
 
@@ -136,42 +135,60 @@ describe('POST /relatorios', function() {
 
         beforeEach((done) => {
           request(app)
-          .post(reports)
-          .set('Authorization', my_token)
-          .set('Content-Type', 'application/json')
-          .set('Accept', 'application/json')
-          .timeout(5000)
-          .send(payload)
-          .expect((res) => {
-            report_id = res.body.result.numero;
-            console.log(report_id)
-          })
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            done();
-          });
+            .post(reports)
+            .set('Authorization', my_token)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .timeout(5000)
+            .send(payload)
+            .expect((res) => {
+              report_id = res.body.result.numero;
+              console.log(report_id)
+            })
+            .expect(200)
+            .end((err, res) => {
+              if (err) return done(err);
+              done();
+            });
         });
+
+        it('retorna mensagem de Nome divergente', function(done) {
+          request(app)
+            .get(`${reports}/${report_id}`)
+            .set('Authorization', my_token)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .timeout(5000)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end((err, res) => {
+              if (err) return done(err);
+              switch(res.body.result.status) {
+                case 'CONCLUIDO':
+                  expect(res.body.result.mensagem).to.be.equal(invalid_name_message)
+                  return done();
+                default:
+                  console.log(res.body.result.status)
+                  return done();
+              }
+            });
+        })
       })
     })
 
-    context('inconsistent data on payload', () => {
-      const invalid_name_message = "Inválido. [INVALID] Nome diferente do cadastrado na Receita Federal."
-      const invalid_birth_date_message = "Inválido. [ERROR] Não foi possível validar: Data de nascimento informada está divergente da constante na base de dados da Secretaria da Receita Federal do Brasil."
-
-      context('data da nascimento divergente da base', () => {
-        let report_id;
-        let payload = {
-          "matriz": "consultaPessoaDefault",
-          "parametros": {
-            "cpf_data_de_nascimento": "28/09/1988",
-            "cpf_nome": "Gabriel Oliveira",
-            "cpf_numero": "07614917677"
-          }
+    context('dados reais de um usuário', () => {
+      let report_id;
+      let payload = {
+        "matriz": "consultaPessoaDefault",
+        "parametros": {
+          "cpf_data_de_nascimento": user_birthdate,
+          "cpf_nome": user_name,
+          "cpf_numero": user_cpf
         }
+      }
 
-        beforeEach((done) => {
-          request(app)
+      beforeEach((done) => {
+        request(app)
           .post(reports)
           .set('Authorization', my_token)
           .set('Content-Type', 'application/json')
@@ -187,63 +204,10 @@ describe('POST /relatorios', function() {
             if (err) return done(err);
             done();
           });
-        });
+      });
 
-        it('retorna mensagem de Data de Nascimento divergente', function(done) {
-          request(app)
-          .get(`${reports}/${report_id}`)
-          .set('Authorization', my_token)
-          .set('Content-Type', 'application/json')
-          .set('Accept', 'application/json')
-          .timeout(5000)
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            switch(res.body.result.status) {
-              case 'CONCLUIDO':
-                expect(res.body.result.mensagem).to.be.equal(invalid_birth_date_message)
-                return done();
-              default:
-                console.log(res.body.result.status)
-                return done();
-            }
-          });
-        })
-      })
-
-      context('dados reais de um usuário', () => {
-        let report_id;
-        let payload = {
-          "matriz": "consultaPessoaDefault",
-          "parametros": {
-            "cpf_data_de_nascimento": user_birthdate,
-            "cpf_nome": user_name,
-            "cpf_numero": user_cpf
-          }
-        }
-
-        beforeEach((done) => {
-          request(app)
-          .post(reports)
-          .set('Authorization', my_token)
-          .set('Content-Type', 'application/json')
-          .set('Accept', 'application/json')
-          .timeout(5000)
-          .send(payload)
-          .expect((res) => {
-            report_id = res.body.result.numero;
-            console.log(report_id)
-          })
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            done();
-          });
-        });
-
-        it('retorna mensagem de sucesso na consulta', function(done) {
-          request(app)
+      it('retorna mensagem de sucesso na consulta', function(done) {
+        request(app)
           .get(`${reports}/${report_id}`)
           .set('Authorization', my_token)
           .set('Content-Type', 'application/json')
@@ -262,7 +226,6 @@ describe('POST /relatorios', function() {
                 return done();
             }
           })
-        })
       })
     })
   })
