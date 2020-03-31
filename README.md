@@ -1,3 +1,18 @@
+# Minhas respostas do desafio
+Os cenários automatizados estão no diretório `qa-engineer-api/apis`.
+
+### Para fazer o setup:
+ - certifique-se de ter o node instalado na máquina;
+ - estando no diretório citado, utilize o yarn como gerenciador de pacotes, e use o comando
+ > `yarn install`
+
+Com o setup feito, copie o `.env.local` para um arquivo `.env` na sua máquina e preencha as variáveis com os valores respectivos.
+
+### Execução dos testes
+
+Para execução dos testes basta rodar
+> `yarn run test`.
+
 # Desafios para vagas de QA na Idwall
 
 Aqui estão os desafios para a primeira fase de testes de candidatos da IDwall para a vaga de Analista/Engenheiro de Qualidade de Software.
