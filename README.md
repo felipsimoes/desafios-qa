@@ -1,4 +1,4 @@
-# Minhas respostas do desafio
+# Minhas respostas ao desafio
 Os cenários automatizados estão no diretório `qa-engineer-api/apis`.
 
 ### Para fazer o setup:
@@ -8,10 +8,15 @@ Os cenários automatizados estão no diretório `qa-engineer-api/apis`.
 
 Com o setup feito, copie o `.env.local` para um arquivo `.env` na sua máquina e preencha as variáveis com os valores respectivos.
 
-### Execução dos testes
+### Para execução dos testes
 
-Para execução dos testes basta rodar
+Basta rodar:
 > `yarn run test`.
+
+
+### Sobre práticas de QA
+
+[Práticas de QA](qa-engineer-api/planning/praticas_qa)
 
 # Desafios para vagas de QA na Idwall
 

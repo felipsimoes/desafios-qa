@@ -4,7 +4,7 @@ A área de qualidade de software de uma empresa é uma das áreas mais important
 Tudo o que construímos na IDwall é baseado em autonomia, alinhamento e colaboração com o objetivo de incentivar a criatividade e o crescimento das pessoas e da empresa.
 
 ## O desafio
-Gostaríamos que você nos explicasse quais diretrizes, abordagens, paradigmas, padrões, caminhos ou ferramentas você considera importante e interessante para que uma empresa obtenha sucesso referente a qualiadede de software do seu produto.
+Gostaríamos que você nos explicasse quais diretrizes, abordagens, paradigmas, padrões, caminhos ou ferramentas você considera importante e interessante para que uma empresa obtenha sucesso referente a qualidade de software do seu produto.
 
 Imagine que você já faz parte de nosso time e visualizou uma necessidade de melhoria em nossa área de qualidade e desejou expor suas idéias e propostas para a empresa.
 
