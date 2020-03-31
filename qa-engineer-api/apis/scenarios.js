@@ -77,13 +77,13 @@ describe('POST /relatorios', function() {
           "matriz": "consultaPessoaDefault",
           "parametros": {
             "cpf_data_de_nascimento": "28/09/1988",
-            "cpf_nome": "Gabriel Oliveira",
-            "cpf_numero": "07614917677"
+            "cpf_nome": user_name,
+            "cpf_numero": user_cpf
           }
         }
 
-        beforeEach(() => {
-          request(app)
+        beforeEach(async () => {
+          await request(app)
             .post(reports)
             .set('Authorization', my_token)
             .set('Content-Type', 'application/json')
@@ -92,31 +92,31 @@ describe('POST /relatorios', function() {
             .send(payload)
             .expect((res) => {
               report_id = res.body.result.numero;
-              logger.info(report_id)
+              logger.info(report_id);
             })
             .expect(200);
+          await sleep(60);
         });
 
-        it('retorna mensagem de Data de Nascimento divergente', function(done) {
-          request(app)
-            .get(`${reports}/${report_id}`)
-            .set('Authorization', my_token)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .timeout(timeout)
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-              if (err) return done(err);
-              switch(res.body.result.status) {
-                case 'CONCLUIDO':
-                  expect(res.body.result.mensagem).to.be.equal(invalid_birth_date_message)
-                  return done();
-                default:
-                  logger.info(res.body.result.status)
-                  return done();
-              }
-            });
+        it('retorna mensagem de Data de Nascimento divergente', async () => {
+          let count = 1;
+          let resp;
+          while(count < 10) {
+            await sleep(60);
+            logger.info('Consultando...');
+            resp = await request(app)
+                                .get(`${reports}/${report_id}`)
+                                .set('Authorization', my_token)
+                                .set('Content-Type', 'application/json')
+                                .set('Accept', 'application/json')
+                                .timeout(timeout)
+                                .expect('Content-Type', /json/)
+                                .expect(200);
+            logger.info(`Retorno: ${resp.body.result.status}`);
+            if(resp.body.result.status == 'CONCLUIDO') { count = 10; }
+            count++;
+          }
+          expect(resp.body.result.mensagem).to.be.include(invalid_birth_date_message);
         })
       })
 
@@ -131,8 +131,8 @@ describe('POST /relatorios', function() {
           }
         }
 
-        beforeEach(() => {
-          request(app)
+        beforeEach(async () => {
+          await request(app)
             .post(reports)
             .set('Authorization', my_token)
             .set('Content-Type', 'application/json')
@@ -144,28 +144,28 @@ describe('POST /relatorios', function() {
               logger.info(report_id);
             })
             .expect(200);
+          await sleep(60);
         });
 
-        it('retorna mensagem de Nome divergente', function(done) {
-          request(app)
-            .get(`${reports}/${report_id}`)
-            .set('Authorization', my_token)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .timeout(timeout)
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-              if (err) return done(err);
-              switch(res.body.result.status) {
-                case 'CONCLUIDO':
-                  expect(res.body.result.mensagem).to.be.equal(invalid_name_message)
-                  return done();
-                default:
-                  logger.info(res.body.result.status);
-                  return done();
-              }
-            });
+        it('retorna mensagem de Nome divergente', async () => {
+          let count = 1;
+          let resp;
+          while(count < 10) {
+            await sleep(60);
+            logger.info('Consultando...');
+            resp = await request(app)
+                                .get(`${reports}/${report_id}`)
+                                .set('Authorization', my_token)
+                                .set('Content-Type', 'application/json')
+                                .set('Accept', 'application/json')
+                                .timeout(timeout)
+                                .expect('Content-Type', /json/)
+                                .expect(200);
+            logger.info(`Retorno: ${resp.body.result.status}`);
+            if(resp.body.result.status == 'CONCLUIDO') { count = 10; }
+            count++;
+          }
+          expect(resp.body.result.mensagem).to.be.include(invalid_name_message);
         })
       })
     })
@@ -194,16 +194,14 @@ describe('POST /relatorios', function() {
             logger.info(report_id);
           })
           .expect(200);
-        await sleep(30);
-        await sleep(30);
+        await sleep(60);
       });
 
-      it('retorna mensagem de sucesso na consulta', async function() {
+      it('retorna mensagem de sucesso na consulta', async () => {
         let count = 1;
         let resp;
         while(count < 10) {
-          await sleep(30);
-          await sleep(30);
+          await sleep(60);
           logger.info('Consultando...');
           resp = await request(app)
                               .get(`${reports}/${report_id}`)
