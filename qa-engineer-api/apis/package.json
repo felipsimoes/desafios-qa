@@ -7,7 +7,7 @@
   "author": "Felipe Simoes <felipe_lima_simoes@hotmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "mocha scenarios.js"
+    "test": "mocha scenarios.js --timeout 600000"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -16,6 +16,7 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "pino": "^6.0.0"
   }
 }
