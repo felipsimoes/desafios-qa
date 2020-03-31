@@ -2,6 +2,7 @@
 require('dotenv').config()
 const expect = require('chai').expect
 const request = require('supertest')
+const logger = require('pino')()
 
 // variaveis de ambiente
 const my_token = process.env.TOKEN
@@ -15,11 +16,12 @@ const health_check = 'health'
 const reports = 'relatorios'
 
 // variaveis
+const timeout = 60000
 const invalid_name_message = "Inválido. [INVALID] Nome diferente do cadastrado na Receita Federal."
 const invalid_birth_date_message = "Inválido. [ERROR] Não foi possível validar: Data de nascimento informada está divergente da constante na base de dados da Secretaria da Receita Federal do Brasil."
 
 describe('GET /health', function() {
-  xit('responds with json', function(done) {
+  it('responds with json', function(done) {
     request(app)
       .get(health_check)
       .set('Accept', 'application/json')
@@ -39,7 +41,7 @@ describe('POST /relatorios', function() {
     }
 
   context('sem utilizar token', () => {
-    xit('returna Unauthorized status', function(done) {
+    it('retorna Unauthorized status', function(done) {
       request(app)
         .post(reports)
         .send(payload)
@@ -51,7 +53,7 @@ describe('POST /relatorios', function() {
 
   context('utilizando token correto', () => {
     context('parametros vazios no payload', () => {
-      xit('returns Bad Request error', function(done) {
+      it('retorna Bad Request error', function(done) {
         request(app)
           .post(reports)
           .set('Authorization', my_token)
@@ -80,23 +82,19 @@ describe('POST /relatorios', function() {
           }
         }
 
-        beforeEach((done) => {
+        beforeEach(() => {
           request(app)
             .post(reports)
             .set('Authorization', my_token)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
-            .timeout(5000)
+            .timeout(timeout)
             .send(payload)
             .expect((res) => {
               report_id = res.body.result.numero;
-              console.log(report_id)
+              logger.info(report_id)
             })
-            .expect(200)
-            .end((err, res) => {
-              if (err) return done(err);
-              done();
-            });
+            .expect(200);
         });
 
         it('retorna mensagem de Data de Nascimento divergente', function(done) {
@@ -105,7 +103,7 @@ describe('POST /relatorios', function() {
             .set('Authorization', my_token)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
-            .timeout(5000)
+            .timeout(timeout)
             .expect('Content-Type', /json/)
             .expect(200)
             .end((err, res) => {
@@ -115,7 +113,7 @@ describe('POST /relatorios', function() {
                   expect(res.body.result.mensagem).to.be.equal(invalid_birth_date_message)
                   return done();
                 default:
-                  console.log(res.body.result.status)
+                  logger.info(res.body.result.status)
                   return done();
               }
             });
@@ -133,23 +131,19 @@ describe('POST /relatorios', function() {
           }
         }
 
-        beforeEach((done) => {
+        beforeEach(() => {
           request(app)
             .post(reports)
             .set('Authorization', my_token)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
-            .timeout(5000)
+            .timeout(timeout)
             .send(payload)
             .expect((res) => {
               report_id = res.body.result.numero;
-              console.log(report_id)
+              logger.info(report_id);
             })
-            .expect(200)
-            .end((err, res) => {
-              if (err) return done(err);
-              done();
-            });
+            .expect(200);
         });
 
         it('retorna mensagem de Nome divergente', function(done) {
@@ -158,7 +152,7 @@ describe('POST /relatorios', function() {
             .set('Authorization', my_token)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
-            .timeout(5000)
+            .timeout(timeout)
             .expect('Content-Type', /json/)
             .expect(200)
             .end((err, res) => {
@@ -168,7 +162,7 @@ describe('POST /relatorios', function() {
                   expect(res.body.result.mensagem).to.be.equal(invalid_name_message)
                   return done();
                 default:
-                  console.log(res.body.result.status)
+                  logger.info(res.body.result.status);
                   return done();
               }
             });
@@ -187,46 +181,50 @@ describe('POST /relatorios', function() {
         }
       }
 
-      beforeEach((done) => {
-        request(app)
+      beforeEach(async () => {
+        await request(app)
           .post(reports)
           .set('Authorization', my_token)
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
-          .timeout(5000)
+          .timeout(timeout)
           .send(payload)
           .expect((res) => {
             report_id = res.body.result.numero;
-            console.log(report_id)
+            logger.info(report_id);
           })
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            done();
-          });
+          .expect(200);
+        await sleep(30);
+        await sleep(30);
       });
 
-      it('retorna mensagem de sucesso na consulta', function(done) {
-        request(app)
-          .get(`${reports}/${report_id}`)
-          .set('Authorization', my_token)
-          .set('Content-Type', 'application/json')
-          .set('Accept', 'application/json')
-          .timeout(5000)
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end((err, res) => {
-            if (err) return done(err);
-            switch(res.body.result.status) {
-              case 'CONCLUIDO':
-                expect(res.body.result.resultado).to.be.equal('VALID')
-                return done();
-              default:
-                console.log(res.body.result.status)
-                return done();
-            }
-          })
+      it('retorna mensagem de sucesso na consulta', async function() {
+        let count = 1;
+        let resp;
+        while(count < 10) {
+          await sleep(30);
+          await sleep(30);
+          logger.info('Consultando...');
+          resp = await request(app)
+                              .get(`${reports}/${report_id}`)
+                              .set('Authorization', my_token)
+                              .set('Content-Type', 'application/json')
+                              .set('Accept', 'application/json')
+                              .timeout(timeout)
+                              .expect('Content-Type', /json/)
+                              .expect(200);
+          logger.info(`Retorno: ${resp.body.result.status}`);
+          if(resp.body.result.status == 'CONCLUIDO') { count = 10; }
+          count++;
+        }
+        expect(resp.body.result.resultado).to.be.equal('VALID');
       })
     })
   })
 })
+
+function sleep(s) {
+  logger.info(`Esperando ${s} segundos`);
+  ms = s * 1000;
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
