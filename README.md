@@ -16,7 +16,7 @@ Basta rodar:
 
 ### Sobre práticas de QA
 
-[Práticas de QA](qa-engineer-api/planning/praticas_qa)
+[Práticas de QA](qa-engineer-api/planning/praticas_qa.md)
 
 # Desafios para vagas de QA na Idwall
 
